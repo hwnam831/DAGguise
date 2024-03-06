@@ -10,6 +10,6 @@ fi
 
 cd $GEM5_ROOT/eval_scripts/simu_single/
 python3 generate_runscript.py ../simu_common/docDist_2cpu_DAGguise.sh
-cd $SPEC_ROOT/run/bwaves_r
+cd $SPEC_ROOT/run
 bash $GEM5_ROOT/eval_scripts/simu_single/runscript.sh
 cd -

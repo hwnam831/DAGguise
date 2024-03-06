@@ -1,7 +1,7 @@
 #!/bin/bash
 
 $GEM5_ROOT/build/X86/gem5.opt \
-        --outdir=/data/scratch/pwd/artifact_test/DAGguise//eval_scripts/simu_simple/results/ \
+        --outdir=/home/user/dagguise/eval_scripts/simu_simple/results/ \
 	$GEM5_ROOT/configs/example/se.py \
 	--cpu-type=DerivO3CPU \
 	--num-cpus=2 \
@@ -18,7 +18,7 @@ $GEM5_ROOT/build/X86/gem5.opt \
         --dramsystemconfigfile=$GEM5_ROOT/ext/dramsim2/DRAMSim2/configs/system_dag_multi.ini \
         --dagprotectionfile=";$GEM5_ROOT/dag_generator/defense.json" \
 	-c "$GEM5_ROOT/sample_programs/docdist/docDist" \
-	--checkpoint-dir=//data/scratch/pwd/artifact_test/DAGguise//checkpoint_merge/merged_checkpoint//\
+	--checkpoint-dir=//home/user/dagguise/checkpoint_merge/merged_checkpoint//\
 	--benchmark=bwaves_r \
 	--simpt-ckpt=0 \
-	--dramsim2outputfile=/data/scratch/pwd/artifact_test/DAGguise//eval_scripts/simu_simple/results/dram \
+	--dramsim2outputfile=/home/user/dagguise/eval_scripts/simu_simple/results/dram \
