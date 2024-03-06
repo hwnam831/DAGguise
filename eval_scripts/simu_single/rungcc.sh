@@ -19,4 +19,4 @@ $GEM5_ROOT/build/X86/gem5.opt \
 	--benchmark=bwaves_r \
 	--dramsim2outputfile=/home/user/dagguise/eval_scripts/simu_simple/results/dram \
 	--take-checkpoints=100000000000,100000000000 \
-	--checkpoint-dir=$GEM5_ROOT/checkpoint/bwaves
+	--checkpoint-dir=$GEM5_ROOT/checkpoint/gcc
