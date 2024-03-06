@@ -10,7 +10,7 @@ fi
 
 # Change if desired
 victim_checkpoint="$GEM5_ROOT/checkpoint/docdist/cpt.1285668711966/"
-unprotected_checkpoint="$SPEC_ROOT/checkpoint/cpt.500000000000/"
+unprotected_checkpoint="$GEM5_ROOT/checkpoint/cpt.500000000000/"
 
 [ ! -d $victim_checkpoint ] && echo "Specified checkpoint doesn't exist! The checkpoint pointer in this script may need to be updated to point to the correct path/tick id." && exit 1
 
