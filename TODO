@@ -1,0 +1,4 @@
+- Memcontrol dump respose latency + context id
+- Spec benchmarks: gcc, lbm, fotonik, bwaves, cactuBSSN, leela xz povray blender
+- 8-core configuration (or 4-core?)
+- Track latency (DRAMSIM::recvTimingReq -- DRAMSIM::readComplete, use outstandingreads)
