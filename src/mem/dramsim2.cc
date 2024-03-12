@@ -197,6 +197,7 @@ DRAMSim2::recvTimingReq(PacketPtr pkt)
     if (pkt->isRead()) {
         if (can_accept) {
             outstandingReads[pkt->getAddr()].push(pkt);
+            readEntryTimes[pkt->getAddr()].push(curTick());
 
             // we count a transaction as outstanding until it has left the
             // queue in the controller, and the response has been sent
@@ -320,10 +321,18 @@ void DRAMSim2::readComplete(unsigned id, uint64_t addr, uint64_t cycle)
     // the best we can do at this point
     PacketPtr pkt = p->second.front();
     p->second.pop();
-
     if (p->second.empty())
         outstandingReads.erase(p);
 
+    ContextID ctxtid = pkt->req->contextId();
+    auto addrAndQ = readEntryTimes.find(addr);
+    assert(addrAndQ != outstandingReads.end());
+    Tick entrytime = addrAndQ->second.front();
+    addrAndQ->second.pop();
+    DPRINTF(DefensiveML, "Read to address %lld, contextid %d, latency %lld\n",
+    addr, ctxtid, curTick() - entrytime);
+    if (addrAndQ->second.empty())
+        readEntryTimes.erase(addrAndQ);
     // no need to check for drain here as the next call will add a
     // response to the response queue straight away
     assert(nbrOutstandingReads != 0);

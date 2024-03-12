@@ -47,6 +47,7 @@
 #include <queue>
 #include <unordered_map>
 
+#include "debug/DefensiveML.hh"
 #include "mem/abstract_mem.hh"
 #include "mem/dramsim2_wrapper.hh"
 #include "mem/qport.hh"
@@ -116,7 +117,7 @@ class DRAMSim2 : public AbstractMemory
      */
     std::unordered_map<Addr, std::queue<PacketPtr> > outstandingReads;
     std::unordered_map<Addr, std::queue<PacketPtr> > outstandingWrites;
-
+    std::unordered_map<Addr, std::queue<Tick> > readEntryTimes;
     /**
      * Count the number of outstanding transactions so that we can
      * block any further requests until there is space in DRAMSim2 and
@@ -131,6 +132,7 @@ class DRAMSim2 : public AbstractMemory
      * responses back without any flow control.
      */
     std::deque<PacketPtr> responseQueue;
+    std::deque<int64_t> readLatencies;
 
     unsigned int nbrOutstanding() const;
 
