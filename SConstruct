@@ -365,7 +365,8 @@ if main['GCC'] or main['CLANG']:
     # Enable -Wall and -Wextra and then disable the few warnings that
     # we consistently violate
     main.Append(CCFLAGS=['-Wall', '-Wundef', '-Wextra',
-                         '-Wno-sign-compare', '-Wno-unused-parameter'])
+                         '-Wno-sign-compare', '-Wno-unused-parameter',
+                         '-Wno-type-limits', 'Wno-array-bounds'])
     # We always compile using C++11
     main.Append(CXXFLAGS=['-std=c++11'])
 #    main.Append(CXXFLAGS=['-Wno-error=deprecated-copy'])
@@ -581,7 +582,7 @@ try:
 except Exception as e:
     warning('While checking protoc version:', str(e))
     main['HAVE_PROTOC'] = False
-              
+
 
 # Check for 'timeout' from GNU coreutils. If present, regressions will
 # be run with a time limit. We require version 8.13 since we rely on
@@ -685,6 +686,7 @@ if main['USE_PYTHON']:
     # Strip the -I from the include folders before adding them to the
     # CPPPATH
     py_includes = map(lambda s: s[2:] if s.startswith('-I') else s, py_includes)
+    print(py_includes)
     main.Append(CPPPATH=py_includes)
 
     # Read the linker flags and split them into libraries and other link
@@ -701,6 +703,7 @@ if main['USE_PYTHON']:
                  py_libs.append(lib)
 
     # verify that this stuff works
+
     if not conf.CheckHeader('Python.h', '<>'):
         error("Check failed for Python.h header in",
                 ' '.join(py_includes), "\n"
