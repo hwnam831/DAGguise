@@ -326,7 +326,7 @@ void DRAMSim2::readComplete(unsigned id, uint64_t addr, uint64_t cycle)
 
     ContextID ctxtid = pkt->req->contextId();
     auto addrAndQ = readEntryTimes.find(addr);
-    assert(addrAndQ != outstandingReads.end());
+    assert(addrAndQ != readEntryTimes.end());
     Tick entrytime = addrAndQ->second.front();
     addrAndQ->second.pop();
     DPRINTF(DefensiveML, "Read to address %lld, contextid %d, latency %lld\n",
