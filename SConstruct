@@ -366,7 +366,10 @@ if main['GCC'] or main['CLANG']:
     # we consistently violate
     main.Append(CCFLAGS=['-Wall', '-Wundef', '-Wextra',
                          '-Wno-sign-compare', '-Wno-unused-parameter',
-                         '-Wno-type-limits', 'Wno-array-bounds'])
+                         '-Wno-type-limits', '-Wno-array-bounds',
+                         '-Wno-stringop-overflow',
+                         '-Wno-misleading-indentation',
+                         '-Wno-parentheses'])
     # We always compile using C++11
     main.Append(CXXFLAGS=['-std=c++11'])
 #    main.Append(CXXFLAGS=['-Wno-error=deprecated-copy'])
@@ -685,7 +688,8 @@ if main['USE_PYTHON']:
     py_includes = filter(lambda s: match(r'.*\/include\/.*',s), py_includes)
     # Strip the -I from the include folders before adding them to the
     # CPPPATH
-    py_includes = map(lambda s: s[2:] if s.startswith('-I') else s, py_includes)
+    py_includes = map(lambda s: s[2:] \
+                      if s.startswith('-I') else s, py_includes)
     print(py_includes)
     main.Append(CPPPATH=py_includes)
 
