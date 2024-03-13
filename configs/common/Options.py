@@ -434,7 +434,7 @@ def addSEOptions(parser):
                       dest="amlprotectionfile",
                       help="Defensive ML model filee")
     parser.add_option("--amlpolicy", type="string", action="store",
-                      default="none", choices=["aml", "pad", "none"],
+                      default="none",
                       dest="amlpolicy",
                       help="Defensive ML policy (default: none)")
 
