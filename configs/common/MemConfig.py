@@ -176,7 +176,10 @@ def config_mem(options, system):
                     mem_ctrl.defenceFile = options.dagprotectionfile
                 if options.dramsim2outputfile:
                     mem_ctrl.outputFile = options.dramsim2outputfile
-                
+                if options.amlprotectionfile:
+                    mem_ctrl.amlprotectionfile = options.amlprotectionfile
+                if options.amlpolicy:
+                    mem_ctrl.amlpolicy = options.amlpolicy
                 mem_ctrl.enableDebug = options.enabledramlog
 
             # Set the number of ranks based on the command-line

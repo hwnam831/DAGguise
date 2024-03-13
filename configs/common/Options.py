@@ -429,7 +429,15 @@ def addSEOptions(parser):
     parser.add_option("--enabledramlog", action="store_true",
                       dest="enabledramlog",
                       help="What input DAG we should use")
-                      
+    parser.add_option("--amlprotectionfile", action="store",
+                      type="string", default="",
+                      dest="amlprotectionfile",
+                      help="Defensive ML model filee")
+    parser.add_option("--amlpolicy", type="string", action="store",
+                      default="none", choices=["aml", "pad", "none"],
+                      dest="amlpolicy",
+                      help="Defensive ML policy (default: none)")
+
 
 
 

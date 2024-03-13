@@ -59,6 +59,14 @@ DRAMSim2::DRAMSim2(const Params* p) :
     DPRINTF(DRAMSim2,
             "Instantiated DRAMSim2 with clock %d ns and queue size %d\n",
             wrapper.clockPeriod(), wrapper.queueSize());
+    const std::string& amlpolicy = p->amlpolicy;
+    if (amlpolicy == "aml"){
+        policy = AML_DEFENSE;
+    } else if (amlpolicy == "pad"){
+        policy = PAD_DEFENSE;
+    } else {
+        policy = NO_DEFNSE;
+    }
 
     DRAMSim::TransactionCompleteCB* read_cb =
         new DRAMSim::Callback<DRAMSim2, void, unsigned, uint64_t, uint64_t>(
@@ -270,7 +278,7 @@ DRAMSim2::recvRespRetry()
 }
 
 void
-DRAMSim2::accessAndRespond(PacketPtr pkt)
+DRAMSim2::accessAndRespond(PacketPtr pkt, Tick perturb=0)
 {
     DPRINTF(DRAMSim2, "Access for address %lld\n", pkt->getAddr());
 
@@ -286,7 +294,8 @@ DRAMSim2::accessAndRespond(PacketPtr pkt)
         assert(pkt->isResponse());
         // Here we pay for xbar additional delay and to process the payload
         // of the packet.
-        Tick time = curTick() + pkt->headerDelay + pkt->payloadDelay;
+        Tick time = curTick() + pkt->headerDelay + pkt->payloadDelay
+                    + perturb;
         // Reset the timings of the packet
         pkt->headerDelay = pkt->payloadDelay = 0;
 
@@ -298,8 +307,10 @@ DRAMSim2::accessAndRespond(PacketPtr pkt)
 
         // if we are not already waiting for a retry, or are scheduled
         // to send a response, schedule an event
-        if (!retryResp && !sendResponseEvent.scheduled())
+        if (!retryResp && !sendResponseEvent.scheduled()){
+            DPRINTF(DefensiveML, "Delaying for %lld\n", perturb);
             schedule(sendResponseEvent, time);
+        }
     } else {
         // queue the packet for deletion
         pendingDelete.reset(pkt);
@@ -329,17 +340,20 @@ void DRAMSim2::readComplete(unsigned id, uint64_t addr, uint64_t cycle)
     assert(addrAndQ != readEntryTimes.end());
     Tick entrytime = addrAndQ->second.front();
     addrAndQ->second.pop();
+    Tick latency = curTick() - entrytime;
     DPRINTF(DefensiveML, "Read to address %lld, contextid %d, latency %lld\n",
-    addr, ctxtid, curTick() - entrytime);
+    addr, ctxtid, latency);
     if (addrAndQ->second.empty())
         readEntryTimes.erase(addrAndQ);
     // no need to check for drain here as the next call will add a
     // response to the response queue straight away
     assert(nbrOutstandingReads != 0);
     --nbrOutstandingReads;
-
+    Tick perturb = 0;
+    if (policy == PAD_DEFENSE)
+        perturb = 82000 > latency ? 82000-latency : 0;
     // perform the actual memory access
-    accessAndRespond(pkt);
+    accessAndRespond(pkt, perturb);
 }
 
 void DRAMSim2::writeComplete(unsigned id, uint64_t addr, uint64_t cycle)
