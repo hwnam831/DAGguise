@@ -50,6 +50,10 @@ class DRAMSim2(AbstractMemory):
                                     "Device configuration file")
     systemConfigFile = Param.String("system.ini",
                                     "Memory organisation configuration file")
+    amlpolicy = Param.String("none",
+                             "AML Defense Policy")
+    amlprotectionfile = Param.String("",
+                                     "AML defense model filepath")
     filePath = Param.String("",
                             "Directory to prepend to file names")
     traceFile = Param.String("", "Output file for trace generation")
