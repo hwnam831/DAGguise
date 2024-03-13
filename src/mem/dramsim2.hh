@@ -152,7 +152,7 @@ class DRAMSim2 : public AbstractMemory
      *
      * @param pkt The packet from the outside world
      */
-    void accessAndRespond(PacketPtr pkt);
+    void accessAndRespond(PacketPtr pkt, Tick perturb);
 
     void sendResponse();
 
