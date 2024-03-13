@@ -278,7 +278,7 @@ DRAMSim2::recvRespRetry()
 }
 
 void
-DRAMSim2::accessAndRespond(PacketPtr pkt, Tick perturb=0)
+DRAMSim2::accessAndRespond(PacketPtr pkt, Tick perturb)
 {
     DPRINTF(DRAMSim2, "Access for address %lld\n", pkt->getAddr());
 
