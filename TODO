@@ -1,4 +1,5 @@
-- Memcontrol dump respose latency + context id
-- Spec benchmarks: gcc, lbm, fotonik, bwaves, cactuBSSN, leela xz povray blender
+- DONE: Memcontrol dump respose latency + context id
+- Spec benchmarks: mcf cactuBSSN (error?) bwaves omnetpp (error?) leela fotonik3D (error) gcc lbm xz x264 blender
 - 8-core configuration (or 4-core?)
-- Track latency (DRAMSIM::recvTimingReq -- DRAMSIM::readComplete, use outstandingreads)
+- AML exporter + importer
+- DONE: Track latency (DRAMSIM::recvTimingReq -- DRAMSIM::readComplete, use outstandingreads)

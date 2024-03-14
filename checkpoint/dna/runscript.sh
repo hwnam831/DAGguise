@@ -18,6 +18,6 @@ $GEM5_ROOT/build/X86/gem5.opt \
         --dramdeviceconfigfile=$GEM5_ROOT/ext/dramsim2/DRAMSim2/ini/DDR3_micron_32M_8B_x8_sg125.ini \
         --dramsystemconfigfile=$GEM5_ROOT/ext/dramsim2/DRAMSim2/system_reg.ini \
         --dagprotectionfile=$GEM5_ROOT/defence/docdist/defenseDAG_0W0N_10000avg.json \
-	-c '/home/pwd/zsim-src/scripts/mrfast-DAG/src/mrsfast' \
-        -o '--search /home/pwd/zsim-src/scripts/mrfast-DAG/dataset/chr3_50K.fa --seq /home/pwd/zsim-src/scripts/mrfast-DAG/readSimulator/chr3_50K_2000.fq' \
+	-c "$GEM5_ROOT/sample_programs/dna/src/mrsfast" \
+        -o "--search $GEM5_ROOT/sample_programs/dna/dataset/chr3_50K.fa --seq $GEM5_ROOT/sample_programs/dna/readSimulator/chr3_50K_2000.fq" \
 	--checkpoint-dir=$GEM5_ROOT/checkpoints/mrfast/ \
