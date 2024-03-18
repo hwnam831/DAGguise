@@ -158,7 +158,7 @@ class AMLShaper{
             for (int i=0; i<8; i++){
                 float p = distribution(generator);
                 int target = p*6000 + 40000;
-                target_buffer[i] = target;
+                target_buffer[i] = target > 0 ? target : 0;
             }
 
 
