@@ -358,7 +358,7 @@ void DRAMSim2::readComplete(unsigned id, uint64_t addr, uint64_t cycle)
     Tick perturb = 0;
     if (policy == PAD_DEFENSE) {
         perturb = 82000 > latency ? 82000-latency : 0;
-    } else if (policy == PAD_DEFENSE) {
+    } else if (policy == AML_DEFENSE) {
         perturb = targetLatencies[targetPosition] > latency ?
             82000-latency : 0;
         targetPosition++;
