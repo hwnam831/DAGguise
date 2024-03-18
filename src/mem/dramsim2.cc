@@ -360,7 +360,7 @@ void DRAMSim2::readComplete(unsigned id, uint64_t addr, uint64_t cycle)
         perturb = 82000 > latency ? 82000-latency : 0;
     } else if (policy == AML_DEFENSE) {
         perturb = targetLatencies[targetPosition] > latency ?
-            82000-latency : 0;
+            targetLatencies[targetPosition]-latency : 0;
         targetPosition++;
         if (targetPosition >= 8){
             shaper.forward(readLatencies, targetLatencies);
