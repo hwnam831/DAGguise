@@ -55,8 +55,7 @@ DRAMSim2::DRAMSim2(const Params* p) :
     nbrOutstandingReads(0), nbrOutstandingWrites(0),
     sendResponseEvent([this]{ sendResponse(); }, name()),
     tickEvent([this]{ tick(); }, name()),
-    readLatencies(16),
-    targetPosition(0)
+    readLatencies(16)
 {
     DPRINTF(DRAMSim2,
             "Instantiated DRAMSim2 with clock %d ns and queue size %d\n",
@@ -66,6 +65,7 @@ DRAMSim2::DRAMSim2(const Params* p) :
         policy = AML_DEFENSE;
         shaper = AMLShaper(p->amlprotectionfile);
         shaper.forward(readLatencies, targetLatencies);
+        targetPosition=0;
     } else if (amlpolicy == "pad"){
         policy = PAD_DEFENSE;
     } else {
