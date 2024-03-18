@@ -72,37 +72,40 @@ class AMLShaper{
         AMLShaper(std::string filename){
             srand(time(NULL));
             generator.seed(rand()%100);
-            std::ifstream paramfile(filename);
-            std::string line;
-            std::getline(paramfile, line);
-            //std::cout << line << std::endl;
-            for (int o=0; o<16; o++){
-                for (int i=0; i<16; i++){
-                    paramfile >> weight0[o][i];
-                    //std::cout << weight0[o][i] << " ";
-                }
-                //std::cout << std::endl;
+            if (filename != ""){
+
+              std::ifstream paramfile(filename);
+              std::string line;
+              std::getline(paramfile, line);
+              //std::cout << line << std::endl;
+              for (int o=0; o<16; o++){
+                  for (int i=0; i<16; i++){
+                      paramfile >> weight0[o][i];
+                      //std::cout << weight0[o][i] << " ";
+                  }
+                  //std::cout << std::endl;
+              }
+              //std::cout << std::endl;
+              std::getline(paramfile, line);
+              std::getline(paramfile, line);
+              //std::cout << line << std::endl;
+              for (int i=0; i<16; i++){
+                  paramfile >> bias0[i];
+                  //std::cout << bias0[i] << " ";
+              }
+              //std::cout << std::endl;
+              std::getline(paramfile, line);
+              std::getline(paramfile, line);
+              //std::cout << line << std::endl;
+              for (int o=0; o<16; o++){
+                  for (int i=0; i<16; i++){
+                      paramfile >> weight1[o][i];
+                      //std::cout << weight1[o][i] << " ";
+                  }
+                  //std::cout << std::endl;
+              }
+              paramfile.close();
             }
-            //std::cout << std::endl;
-            std::getline(paramfile, line);
-            std::getline(paramfile, line);
-            //std::cout << line << std::endl;
-            for (int i=0; i<16; i++){
-                paramfile >> bias0[i];
-                //std::cout << bias0[i] << " ";
-            }
-            //std::cout << std::endl;
-            std::getline(paramfile, line);
-            std::getline(paramfile, line);
-            //std::cout << line << std::endl;
-            for (int o=0; o<16; o++){
-                for (int i=0; i<16; i++){
-                    paramfile >> weight1[o][i];
-                    //std::cout << weight1[o][i] << " ";
-                }
-                //std::cout << std::endl;
-            }
-            paramfile.close();
 
 
 
