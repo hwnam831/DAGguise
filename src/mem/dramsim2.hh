@@ -252,7 +252,7 @@ class DRAMSim2 : public AbstractMemory
     std::deque<PacketPtr> responseQueue;
     std::deque<int64_t> readLatencies;
     int64_t targetLatencies[8];
-    int targetPotision;
+    int targetPosition;
 
     AMLShaper shaper;
 
