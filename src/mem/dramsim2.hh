@@ -44,7 +44,9 @@
 #ifndef __MEM_DRAMSIM2_HH__
 #define __MEM_DRAMSIM2_HH__
 
+#include <fstream>
 #include <queue>
+#include <random>
 #include <unordered_map>
 
 #include "debug/DefensiveML.hh"
@@ -53,6 +55,113 @@
 #include "mem/qport.hh"
 #include "params/DRAMSim2.hh"
 
+class AMLShaper{
+    float weight0[16][16];
+    float bias0[16];
+
+    float weight1[16][16];
+    float bias1[16];
+
+    float avg_scores[16];
+
+    float amp=8.0;
+
+
+    std::default_random_engine generator;
+    public:
+        AMLShaper(std::string filename){
+            srand(time(NULL));
+            generator.seed(rand()%100);
+            std::ifstream paramfile(filename);
+            std::string line;
+            std::getline(paramfile, line);
+            //std::cout << line << std::endl;
+            for (int o=0; o<16; o++){
+                for (int i=0; i<16; i++){
+                    paramfile >> weight0[o][i];
+                    //std::cout << weight0[o][i] << " ";
+                }
+                //std::cout << std::endl;
+            }
+            //std::cout << std::endl;
+            std::getline(paramfile, line);
+            std::getline(paramfile, line);
+            //std::cout << line << std::endl;
+            for (int i=0; i<16; i++){
+                paramfile >> bias0[i];
+                //std::cout << bias0[i] << " ";
+            }
+            //std::cout << std::endl;
+            std::getline(paramfile, line);
+            std::getline(paramfile, line);
+            //std::cout << line << std::endl;
+            for (int o=0; o<16; o++){
+                for (int i=0; i<16; i++){
+                    paramfile >> weight1[o][i];
+                    //std::cout << weight1[o][i] << " ";
+                }
+                //std::cout << std::endl;
+            }
+            paramfile.close();
+
+
+
+        }
+
+        int argmax(float x[16]){
+            int max = x[0];
+            int idx = 0;
+            for (int i=1; i<16; i++){
+                if (x[i] > max){
+                    max = x[i];
+                    idx = i;
+                }
+            }
+            return idx;
+        }
+
+        void fflayer(float x[16], float w[16][16],
+                    float b[16], float* out_buffer){
+
+            for (int o=0; o<16; o++){
+                out_buffer[o] = b[o];
+                for (int i=0; i<16; i++){
+                    out_buffer[o] += x[i]*w[o][i];
+                }
+            }
+        }
+        void forward(std::deque<int64_t> inq,
+                    int64_t* target_buffer){
+            float input[16];
+            for (int i=0; i<16; i++){
+                input[i] = (inq.at(i) - 40000.0)/6000;
+            }
+
+            float x[16];
+
+            fflayer(input, weight0, bias0, x);
+
+            for (int i=0; i<16; i++){
+                x[i] = x[i] > 0 ? x[i] : 0;
+            }
+
+            float x2[16];
+
+            fflayer(x, weight1, bias1, x2);
+
+            float level = (amp * argmax(x2) / 16.0);
+
+            std::normal_distribution<float> distribution(level,level/2);
+            for (int i=0; i<8; i++){
+                float p = distribution(generator);
+                int target = p*6000 + 40000;
+                target_buffer[i] = target;
+            }
+
+
+        }
+
+};
 class DRAMSim2 : public AbstractMemory
 {
   private:
@@ -142,6 +251,10 @@ class DRAMSim2 : public AbstractMemory
      */
     std::deque<PacketPtr> responseQueue;
     std::deque<int64_t> readLatencies;
+    int64_t targetLatencies[8];
+    int targetPotision;
+
+    AMLShaper shaper;
 
     unsigned int nbrOutstanding() const;
 

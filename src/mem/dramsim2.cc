@@ -54,7 +54,9 @@ DRAMSim2::DRAMSim2(const Params* p) :
     retryReq(false), retryResp(false), startTick(0),
     nbrOutstandingReads(0), nbrOutstandingWrites(0),
     sendResponseEvent([this]{ sendResponse(); }, name()),
-    tickEvent([this]{ tick(); }, name())
+    tickEvent([this]{ tick(); }, name()),
+    readLatencies(16),
+    targetPosition(0)
 {
     DPRINTF(DRAMSim2,
             "Instantiated DRAMSim2 with clock %d ns and queue size %d\n",
@@ -62,6 +64,8 @@ DRAMSim2::DRAMSim2(const Params* p) :
     const std::string& amlpolicy = p->amlpolicy;
     if (amlpolicy == "aml"){
         policy = AML_DEFENSE;
+        shaper = AMLShaper(p->amlprotectionfile);
+        shaper.forward(readLatencies, targetLatencies);
     } else if (amlpolicy == "pad"){
         policy = PAD_DEFENSE;
     } else {
@@ -341,6 +345,8 @@ void DRAMSim2::readComplete(unsigned id, uint64_t addr, uint64_t cycle)
     Tick entrytime = addrAndQ->second.front();
     addrAndQ->second.pop();
     Tick latency = curTick() - entrytime;
+    readLatencies.push_back(latency);
+    readLatencies.pop_front();
     DPRINTF(DefensiveML, "Read to address %lld, contextid %d, latency %lld\n",
     addr, ctxtid, latency);
     if (addrAndQ->second.empty())
@@ -350,8 +356,17 @@ void DRAMSim2::readComplete(unsigned id, uint64_t addr, uint64_t cycle)
     assert(nbrOutstandingReads != 0);
     --nbrOutstandingReads;
     Tick perturb = 0;
-    if (policy == PAD_DEFENSE)
+    if (policy == PAD_DEFENSE) {
         perturb = 82000 > latency ? 82000-latency : 0;
+    } else if (policy == PAD_DEFENSE) {
+        perturb = targetLatencies[targetPotision] > latency ?
+            82000-latency : 0;
+        targetPosition++;
+        if (targetPosition >= 8){
+            shaper.forward(readLatencies, targetLatencies);
+            targetPosition=0;
+        }
+    }
     // perform the actual memory access
     accessAndRespond(pkt, perturb);
 }
