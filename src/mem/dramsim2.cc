@@ -53,11 +53,11 @@ DRAMSim2::DRAMSim2(const Params* p) :
             p->traceFile, p->defenceFile, p->defenceFile2, p->range.size() / 1024 / 1024, p->outputFile, p->enableDebug),
     retryReq(false), retryResp(false), startTick(0),
     nbrOutstandingReads(0), nbrOutstandingWrites(0),
-    sendResponseEvent([this]{ sendResponse(); }, name()),
-    tickEvent([this]{ tick(); }, name()),
     readLatencies(16),
+    targetPosition(0),
     shaper(p->amlprotectionfile),
-    targetPosition(0)
+    sendResponseEvent([this]{ sendResponse(); }, name()),
+    tickEvent([this]{ tick(); }, name())
 {
     DPRINTF(DRAMSim2,
             "Instantiated DRAMSim2 with clock %d ns and queue size %d\n",
