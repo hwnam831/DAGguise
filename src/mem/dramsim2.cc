@@ -470,7 +470,5 @@ DRAMSim2::AMLStats::AMLStats(Stats::Group *parent)
                totalReadLatency / totalReads),
       ADD_STAT(avgPerturb, "Avg latency of read requests",
                totalPerturb / totalReads){
-        totalPerturb.init(0);
-        totalReadLatency.init(0);
-        totalReads.init(0);
+
     }
