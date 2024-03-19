@@ -180,6 +180,8 @@ def config_mem(options, system):
                     mem_ctrl.amlprotectionfile = options.amlprotectionfile
                 if options.amlpolicy:
                     mem_ctrl.amlpolicy = options.amlpolicy
+                if options.amlamplitude:
+                    mem_ctrl.amlamplitude = options.amlamplitude
                 mem_ctrl.enableDebug = options.enabledramlog
 
             # Set the number of ranks based on the command-line

@@ -437,6 +437,10 @@ def addSEOptions(parser):
                       default="none",
                       dest="amlpolicy",
                       help="Defensive ML policy (default: none)")
+    parser.add_option("--amlamplitude", type=float, action="store",
+                      default=6.0,
+                      dest="amlamplitude",
+                      help="Defensive ML policy (default: none)")
 
 
 
