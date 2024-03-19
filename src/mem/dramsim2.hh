@@ -69,7 +69,8 @@ class AMLShaper{
 
     std::default_random_engine generator;
     public:
-        AMLShaper(std::string filename){
+        AMLShaper(std::string filename, float amplitude){
+            amp = amplitude;
             srand(time(NULL));
             generator.seed(rand()%100);
             if (filename != ""){
@@ -198,6 +199,26 @@ class DRAMSim2 : public AbstractMemory
         AddrRangeList getAddrRanges() const;
 
     };
+
+    struct AMLStats : public Stats::Group {
+        AMLStats(Stats::Group *parent);
+
+        /** Count the number of dropped requests. */
+        Stats::Scalar totalPerturb;
+
+        /** Total num of ticks read reqs took to complete  */
+        Stats::Scalar totalReadLatency;
+
+
+        /** Count the number reads. */
+        Stats::Scalar totalReads;
+
+        /** Avg num of ticks each read req took to complete  */
+        Stats::Formula avgReadLatency;
+
+        Stats::Formula avgPerturb;
+
+    } stats;
 
     MemoryPort port;
 

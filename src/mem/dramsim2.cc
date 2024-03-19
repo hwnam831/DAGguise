@@ -48,6 +48,7 @@
 
 DRAMSim2::DRAMSim2(const Params* p) :
     AbstractMemory(p),
+    stats(this),
     port(name() + ".port", *this),
     wrapper(p->deviceConfigFile, p->systemConfigFile, p->filePath,
             p->traceFile, p->defenceFile, p->defenceFile2, p->range.size() / 1024 / 1024, p->outputFile, p->enableDebug),
@@ -55,7 +56,7 @@ DRAMSim2::DRAMSim2(const Params* p) :
     nbrOutstandingReads(0), nbrOutstandingWrites(0),
     readLatencies(16),
     targetPosition(0),
-    shaper(p->amlprotectionfile),
+    shaper(p->amlprotectionfile, p->amlamplitude),
     sendResponseEvent([this]{ sendResponse(); }, name()),
     tickEvent([this]{ tick(); }, name())
 {
@@ -367,6 +368,9 @@ void DRAMSim2::readComplete(unsigned id, uint64_t addr, uint64_t cycle)
             targetPosition=0;
         }
     }
+    stats.totalReads++;
+    stats.totalPerturb += perturb;
+    stats.totalReadLatency += latency + perturb;
     // perform the actual memory access
     accessAndRespond(pkt, perturb);
 }
@@ -456,3 +460,17 @@ DRAMSim2Params::create()
 {
     return new DRAMSim2(this);
 }
+
+DRAMSim2::AMLStats::AMLStats(Stats::Group *parent)
+    : Stats::Group(parent),
+      ADD_STAT(totalPerturb, "total perturbations in Ticks"),
+      ADD_STAT(totalReadLatency, "total read latency in Ticks"),
+      ADD_STAT(totalReads, "total read count"),
+      ADD_STAT(avgReadLatency, "Avg latency of read requests",
+               totalReadLatency / totalReads),
+      ADD_STAT(avgPerturb, "Avg latency of read requests",
+               totalPerturb / totalReads){
+        totalPerturb.init(0);
+        totalReadLatency.init(0);
+        totalReads.init(0);
+    }

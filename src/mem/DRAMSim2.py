@@ -54,6 +54,8 @@ class DRAMSim2(AbstractMemory):
                              "AML Defense Policy")
     amlprotectionfile = Param.String("",
                                      "AML defense model filepath")
+    amlamplitude = Param.Float(4.0,
+                                     "AML defense amplitude (default 4.0)")
     filePath = Param.String("",
                             "Directory to prepend to file names")
     traceFile = Param.String("", "Output file for trace generation")
