@@ -340,7 +340,7 @@ void DRAMSim2::readComplete(unsigned id, uint64_t addr, uint64_t cycle)
     if (p->second.empty())
         outstandingReads.erase(p);
 
-    ContextID ctxtid = pkt->req->contextId();
+    //ContextID ctxtid = pkt->req->contextId();
     auto addrAndQ = readEntryTimes.find(addr);
     assert(addrAndQ != readEntryTimes.end());
     Tick entrytime = addrAndQ->second.front();
@@ -348,8 +348,8 @@ void DRAMSim2::readComplete(unsigned id, uint64_t addr, uint64_t cycle)
     Tick latency = curTick() - entrytime;
     readLatencies.push_back(latency);
     readLatencies.pop_front();
-    DPRINTF(DefensiveML, "Read to address %lld, contextid %d, latency %lld\n",
-    addr, ctxtid, latency);
+    DPRINTF(DefensiveML, "Read to address %lld, latency %lld\n",
+    addr, latency);
     if (addrAndQ->second.empty())
         readEntryTimes.erase(addrAndQ);
     // no need to check for drain here as the next call will add a
